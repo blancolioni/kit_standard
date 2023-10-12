@@ -7,11 +7,35 @@ package Kit is
       key Top_Record : Record_Type is Readable;
    end Kit_Root_Record;
 
+   record Kit_User is
+      unique key Identity : String (32);
+   end Kit_User;
+
+   record Kit_Role is
+      unique key Identity : String (32);
+   end Kit_Role;
+
+   record Kit_User_Role is
+      key Kit_User;
+      key Kit_Role;
+      unique key Kit_User_Role with Kit_User, Kit_Role;
+   end Kit_User_Role;
+
    record Kit_Record is
       unique key Name : String (64);
       unique key Table_Index   : Positive;
       Record_Length : Natural;
    end Kit_Record;
+
+   record Kit_Access is
+      Access_Flags : Natural;
+   end Kit_Access;
+
+   record Kit_Record_Access : Kit_Access is
+      key Kit_Record;
+      key Kit_Role;
+      unique key Kit_Record_Access with Kit_Record, Kit_Role;
+   end Kit_Record_Access;
 
    record Kit_Record_Base is
       Offset      : Natural;
@@ -75,6 +99,12 @@ package Kit is
       unique key Record_Field with Kit_Record, Name;
       key Display_Field with Kit_Record, Display;
    end Kit_Field;
+
+   record Kit_Field_Access : Kit_Access is
+      key Kit_Field;
+      key Kit_Role;
+      unique key Kit_Record_Access with Kit_Record, Kit_Role;
+   end Kit_Field_Access;
 
    record Kit_Display_Field is
       key Kit_Record;
